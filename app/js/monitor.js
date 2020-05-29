@@ -6,12 +6,17 @@ const os = osu.os;
 const cpu = osu.cpu;
 const mem = osu.mem;
 
+let CPU_OVERLOAD_PERCENTAGE = 80;
+let MEMORY_OVERLOAD_PERCENTAGE = 75;
+
 // Select DOM Elements
 const cpuModel = document.getElementById('cpu-model');
+const cpuProgress = document.getElementById('cpu-progress');
 const cpuUsage = document.getElementById('cpu-usage');
 const cpuFree = document.getElementById('cpu-free');
 const ramUsage = document.getElementById('memory-usage');
 const ramFree = document.getElementById('memory-free');
+const ramProgress = document.getElementById('memory-progress');
 const compName = document.getElementById('comp-name');
 const compUser = document.getElementById('user');
 const compOS = document.getElementById('os');
@@ -24,6 +29,16 @@ setInterval(() => {
 	// CPU Usage
 	cpu.usage().then((cpuInfo) => {
 		cpuUsage.innerText = `${cpuInfo.toFixed(2)} %`;
+
+		// Progress bar percentage
+		cpuProgress.style.width = cpuInfo + '%';
+
+		// Progress bar overload color
+		if (cpuInfo > CPU_OVERLOAD_PERCENTAGE) {
+			cpuProgress.style.background = 'red';
+		} else {
+			cpuProgress.style.background = '#fcba03';
+		}
 	});
 	// CPU Free
 	cpu.free().then((cpuInfo) => {
@@ -39,6 +54,15 @@ setInterval(() => {
 		ramFree.innerText = `${
 			memInfo.freeMemMb
 		} GB - ${memInfo.freeMemPercentage.toFixed(2)} %`;
+
+		ramProgress.style.width = 100 - memInfo.freeMemPercentage + '%';
+
+		// Progress bar overload color
+		if (100 - memInfo.freeMemPercentage > MEMORY_OVERLOAD_PERCENTAGE) {
+			ramProgress.style.background = 'red';
+		} else {
+			ramProgress.style.background = '#fcba03';
+		}
 	});
 
 	// Uptime
