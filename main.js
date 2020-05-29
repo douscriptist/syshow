@@ -27,6 +27,10 @@ function createMainWindow() {
 	mainWindow.loadFile(`${__dirname}/app/index.html`);
 }
 
+// LATER: Squirrel - https://github.com/electron/windows-installer/blob/master/README.md#handling-squirrel-events
+// Notification bottom
+app.setAppUserModelId('HowSys');
+
 app.on('ready', () => {
 	createMainWindow();
 

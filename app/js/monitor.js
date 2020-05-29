@@ -7,7 +7,8 @@ const cpu = osu.cpu;
 const mem = osu.mem;
 
 let CPU_OVERLOAD_PERCENTAGE = 80;
-let MEMORY_OVERLOAD_PERCENTAGE = 75;
+let MEMORY_OVERLOAD_PERCENTAGE = 80;
+let ALERT_TIME = 5;
 
 // Select DOM Elements
 const cpuModel = document.getElementById('cpu-model');
@@ -34,8 +35,20 @@ setInterval(() => {
 		cpuProgress.style.width = cpuInfo + '%';
 
 		// Progress bar overload color
-		if (cpuInfo > CPU_OVERLOAD_PERCENTAGE) {
+		if (cpuInfo >= CPU_OVERLOAD_PERCENTAGE) {
 			cpuProgress.style.background = 'red';
+
+			// Check and Notify user
+			if (runNotify(ALERT_TIME, 'CPU')) {
+				notify({
+					title: 'Warning: CPU Overload',
+					body: `CPU usage is over ${CPU_OVERLOAD_PERCENTAGE}%. Please check your current process. If you're aware just ignore this warning.`,
+					icon: path.join(__dirname, 'img', 'icon.png'),
+				});
+
+				// Set new timestamp for ALERT_TIME
+				localStorage.setItem('howsys-CPU-lastNotify', +new Date());
+			}
 		} else {
 			cpuProgress.style.background = '#fcba03';
 		}
@@ -58,8 +71,20 @@ setInterval(() => {
 		ramProgress.style.width = 100 - memInfo.freeMemPercentage + '%';
 
 		// Progress bar overload color
-		if (100 - memInfo.freeMemPercentage > MEMORY_OVERLOAD_PERCENTAGE) {
+		if (100 - memInfo.freeMemPercentage >= MEMORY_OVERLOAD_PERCENTAGE) {
 			ramProgress.style.background = 'red';
+
+			// Check and Notify user
+			if (runNotify(ALERT_TIME, 'RAM')) {
+				notify({
+					title: 'Warning: RAM Overload',
+					body: `RAM usage is over ${MEMORY_OVERLOAD_PERCENTAGE}%. Please check your current process. If you're aware just ignore this warning.`,
+					icon: path.join(__dirname, 'img', 'icon.png'),
+				});
+
+				// Set new timestamp for ALERT_TIME
+				localStorage.setItem('howsys-RAM-lastNotify', +new Date());
+			}
 		} else {
 			ramProgress.style.background = '#fcba03';
 		}
@@ -113,4 +138,42 @@ function formatDate(time) {
 	const seconds = Math.floor(time % 60);
 
 	return `${day}d, ${hour}h, ${mins}m, ${seconds}s`;
+}
+
+// Notification
+function notify(options) {
+	new Notification(options.title, options);
+}
+
+// Notification time checker
+function runNotify(frequency, type) {
+	let storageValue;
+	switch (type) {
+		case 'CPU':
+			storageValue = localStorage.getItem('howsys-CPU-lastNotify');
+			break;
+		case 'RAM':
+			storageValue = localStorage.getItem('howsys-RAM-lastNotify');
+			break;
+		default:
+			storageValue = null;
+			break;
+	}
+
+	if (!storageValue) {
+		// Store timestamp
+		localStorage.setItem(`howsys-${type}-lastNotify`, +new Date());
+		// localStorage.setItem('howsys-CPU-lastNotify', +new Date());
+		// localStorage.setItem('howsys-RAM-lastNotify', +new Date());
+		return true;
+	}
+	const notifyTime = new Date(
+		parseInt(localStorage.getItem(`howsys-${type}-lastNotify`))
+	);
+
+	const now = new Date();
+	const diffTime = Math.abs(now - notifyTime);
+	const minPassed = Math.ceil(diffTime / (1000 * 60));
+
+	return minPassed > frequency ? true : false;
 }
