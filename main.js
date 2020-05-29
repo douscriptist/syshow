@@ -12,12 +12,12 @@ function createMainWindow() {
 		title: 'SysHow',
 		width: isDevMode ? 750 : 500,
 		height: 600,
-		icon: `${__dirname}/assets/icons/Icon_256x256.png`,
+		icon: `${__dirname}/assets/icons/icon.png`,
 		resizable: isDevMode,
 		backgroundColor: '#252b4d',
 		webPreferences: {
 			nodeIntegration: true,
-			// enableRemoteModule: true, // electron-log
+			enableRemoteModule: true, // electron-log
 		},
 	});
 
