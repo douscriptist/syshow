@@ -10,8 +10,8 @@ let mainWindow;
 function createMainWindow() {
 	mainWindow = new BrowserWindow({
 		title: 'SysHow',
-		width: isDevMode ? 750 : 500,
-		height: 600,
+		width: isDevMode ? 650 : 400,
+		height: 500,
 		icon: `${__dirname}/assets/icons/icon.png`,
 		resizable: isDevMode,
 		backgroundColor: '#252b4d',
