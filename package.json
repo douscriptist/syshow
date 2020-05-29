@@ -1,0 +1,26 @@
+{
+	"name": "syshow",
+	"productName": "SysHow",
+	"version": "1.0.0",
+	"description": "Learning electron with an workshop app for information of system",
+	"main": "main.js",
+	"scripts": {
+		"start": "cross-env NODE_ENV=production electron .",
+		"dev": "cross-env NODE_ENV=development nodemon --exec electron .",
+		"package-mac": "cross-env NODE_ENV=production electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+		"package-win": "cross-env NODE_ENV=production electron-packager . --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Image Resizer\"",
+		"package-linux": "cross-env NODE_ENV=production electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
+	},
+	"author": "Kaan Yilmaz",
+	"license": "ISC",
+	"devDependencies": {
+		"cross-env": "^7.0.2",
+		"electron": "^9.0.0",
+		"electron-packager": "^14.2.1",
+		"nodemon": "^2.0.4"
+	},
+	"dependencies": {
+		"electron-log": "^4.2.0",
+		"slash": "^3.0.0"
+	}
+}
