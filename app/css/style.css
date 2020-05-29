@@ -27,6 +27,7 @@ ul {
 
 .content {
   opacity: 0;
+  visibility: hidden;
   object-fit: cover;
   position: absolute;
   top: 0;
@@ -43,6 +44,17 @@ ul {
   margin: 2px 0;
   border-bottom: 1px #555 solid;
   background: var(--secondary-background-color);
+  display: flex;
+  align-items: center;
+
+}
+
+.content li img {
+  display: flex;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
 }
 
 .content li span {
@@ -50,8 +62,28 @@ ul {
   margin-left: 2px;
 }
 
+.ip-area i {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 30px;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 4px;
+}
+
+#ip {
+  transition: .1s all;
+}
+
+#ip.blur {
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
 .content.show {
   opacity: 1;
+  visibility: visible;
 }
 
 .hide {

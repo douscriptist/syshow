@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"electron-log": "^4.2.0",
+		"node-os-utils": "^1.2.2",
 		"slash": "^3.0.0"
 	}
 }
