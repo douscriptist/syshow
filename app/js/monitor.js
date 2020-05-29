@@ -47,7 +47,7 @@ setInterval(() => {
 				});
 
 				// Set new timestamp for ALERT_TIME
-				localStorage.setItem('howsys-CPU-lastNotify', +new Date());
+				localStorage.setItem('syshow-CPU-lastNotify', +new Date());
 			}
 		} else {
 			cpuProgress.style.background = '#fcba03';
@@ -83,7 +83,7 @@ setInterval(() => {
 				});
 
 				// Set new timestamp for ALERT_TIME
-				localStorage.setItem('howsys-RAM-lastNotify', +new Date());
+				localStorage.setItem('syshow-RAM-lastNotify', +new Date());
 			}
 		} else {
 			ramProgress.style.background = '#fcba03';
@@ -150,10 +150,10 @@ function runNotify(frequency, type) {
 	let storageValue;
 	switch (type) {
 		case 'CPU':
-			storageValue = localStorage.getItem('howsys-CPU-lastNotify');
+			storageValue = localStorage.getItem('syshow-CPU-lastNotify');
 			break;
 		case 'RAM':
-			storageValue = localStorage.getItem('howsys-RAM-lastNotify');
+			storageValue = localStorage.getItem('syshow-RAM-lastNotify');
 			break;
 		default:
 			storageValue = null;
@@ -162,13 +162,13 @@ function runNotify(frequency, type) {
 
 	if (!storageValue) {
 		// Store timestamp
-		localStorage.setItem(`howsys-${type}-lastNotify`, +new Date());
-		// localStorage.setItem('howsys-CPU-lastNotify', +new Date());
-		// localStorage.setItem('howsys-RAM-lastNotify', +new Date());
+		localStorage.setItem(`syshow-${type}-lastNotify`, +new Date());
+		// localStorage.setItem('syshow-CPU-lastNotify', +new Date());
+		// localStorage.setItem('syshow-RAM-lastNotify', +new Date());
 		return true;
 	}
 	const notifyTime = new Date(
-		parseInt(localStorage.getItem(`howsys-${type}-lastNotify`))
+		parseInt(localStorage.getItem(`syshow-${type}-lastNotify`))
 	);
 
 	const now = new Date();
