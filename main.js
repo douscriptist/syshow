@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const slash = require('slash');
 const log = require('electron-log');
 const Store = require('./Store');
@@ -13,8 +13,10 @@ const store = new Store({
 	configName: 'user-settings',
 	defaults: {
 		settings: {
-			cpuOverload: 80,
+			cpuOverload: 75,
+			ramOverload: 80,
 			alertFrequency: 5,
+			theme: 'dark',
 		},
 	},
 });
@@ -31,6 +33,7 @@ function createMainWindow() {
 			nodeIntegration: true,
 			enableRemoteModule: true, // electron-log
 		},
+		autoHideMenuBar: true,
 	});
 
 	// Is development mode open developer tools default
@@ -48,7 +51,7 @@ app.on('ready', () => {
 
 	// Sending default settings on create window
 	mainWindow.webContents.on('dom-ready', () => {
-		mainWindow.webContents.send('settings:get', store.get('settings'));
+		sendSettings();
 	});
 
 	const mainMenu = Menu.buildFromTemplate(menu);
@@ -77,6 +80,18 @@ const menu = [
 		  ]
 		: []),
 ];
+
+// Set settings
+ipcMain.on('settings:set', (e, settings) => {
+	store.set('settings', settings);
+	sendSettings();
+	console.log(settings);
+});
+
+// Sending settings to the renderer
+function sendSettings() {
+	mainWindow.webContents.send('settings:get', store.get('settings'));
+}
 
 app.on('window-all-closed', () => {
 	if (!isMac) {

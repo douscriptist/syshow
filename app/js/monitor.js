@@ -1,14 +1,22 @@
 const path = require('path');
 const osCore = require('os');
+const { ipcRenderer } = require('electron');
 const osu = require('node-os-utils');
 
 const os = osu.os;
 const cpu = osu.cpu;
 const mem = osu.mem;
 
-let CPU_OVERLOAD_PERCENTAGE = 80;
-let MEMORY_OVERLOAD_PERCENTAGE = 80;
-let ALERT_TIME = 5;
+let CPU_OVERLOAD_PERCENTAGE;
+let MEMORY_OVERLOAD_PERCENTAGE;
+let ALERT_TIME;
+
+// Get settings & values
+ipcRenderer.on('settings:get', (e, settings) => {
+	CPU_OVERLOAD_PERCENTAGE = +settings.cpuOverload;
+	MEMORY_OVERLOAD_PERCENTAGE = +settings.ramOverload;
+	ALERT_TIME = +settings.alertFrequency;
+});
 
 // Select DOM Elements
 const cpuModel = document.getElementById('cpu-model');
