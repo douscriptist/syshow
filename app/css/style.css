@@ -21,7 +21,6 @@
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-
 body {
   background: var(--background-color) url('../img/bg.jpg') no-repeat 0px 40px / cover;
   color: #fff;
@@ -32,6 +31,21 @@ body {
   justify-content: center;
   min-height: 100vh;
   margin: 0;
+}
+
+.theme {
+  font-size: 25px;
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+}
+
+.theme.left {
+  left: 20px !important;
+}
+
+.theme.right {
+  right: 20px !important;
 }
 
 ul {
