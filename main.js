@@ -1,9 +1,11 @@
 const path = require('path');
-const { app, Menu, ipcMain, Tray, globalShortcut } = require('electron');
+const { app, Menu, ipcMain, globalShortcut } = require('electron');
 const slash = require('slash');
 const log = require('electron-log');
+
 const Store = require('./Store');
 const MainWindow = require('./MainWindow');
+const SysHowTray = require('./SysHowTray');
 
 const isDevMode = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform === 'darwin' ? true : false;
@@ -47,26 +49,9 @@ app.on('ready', () => {
 
 	// Tray icon
 	const icon = path.join(__dirname, 'assets', 'icons', 'tray_icon.png');
-	tray = new Tray(icon);
-	tray.setToolTip('SysHow'); // set Label
-	// tray.displayBalloon({
-	// 	title: 'S',
-	// 	content: 'H',
-	// 	iconType: 'info',
-	// 	largeIcon: false,
-	// });
 
-	// Double Click - Show/Hide
-	tray.on('double-click', () => {
-		mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-	});
-
-	// Tray right click menu
-	const contextMenu = Menu.buildFromTemplate(rightClickMenu);
-	tray.setContextMenu(contextMenu); // tray.popUpContextMenu(contextMenu);
-
-	// Right Click
-	// tray.on('right-click', () => {});
+	// Init tray
+	tray = new SysHowTray(icon, mainWindow);
 
 	mainWindow.on('close', (e) => {
 		if (!app.isQuitting) {
@@ -75,15 +60,12 @@ app.on('ready', () => {
 		} else {
 			return true;
 		}
-
-		// LATER:
+		// LATER: check for sth.
 		!tray.isDestroyed() &&
-			tray.displayBalloon({
-				title: 'SysHow',
-				content: 'We are taking care of your computer, silently. :)',
-				iconType: 'info',
-				largeIcon: false,
-			});
+			tray.showInfoBalloon(
+				'We are taking care of your computer, silently. :)',
+				'info'
+			);
 	});
 
 	mainWindow.on('closed', () => {
@@ -117,25 +99,6 @@ const menu = [
 				},
 		  ]
 		: []),
-];
-
-const rightClickMenu = [
-	{
-		label: 'Hello',
-		click: () => console.log('hello'),
-	},
-	{
-		label: 'Run on start',
-		click: () => console.log((rightClickMenu[1].checked = true)),
-		checked: true,
-	},
-	{
-		label: 'Quit',
-		click: () => {
-			app.isQuitting = true;
-			app.quit();
-		},
-	},
 ];
 
 // Set settings
