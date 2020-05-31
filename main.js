@@ -1,15 +1,9 @@
 const path = require('path');
-const {
-	app,
-	BrowserWindow,
-	Menu,
-	ipcMain,
-	Tray,
-	globalShortcut,
-} = require('electron');
+const { app, Menu, ipcMain, Tray, globalShortcut } = require('electron');
 const slash = require('slash');
 const log = require('electron-log');
 const Store = require('./Store');
+const MainWindow = require('./MainWindow');
 
 const isDevMode = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform === 'darwin' ? true : false;
@@ -29,30 +23,6 @@ const store = new Store({
 		},
 	},
 });
-
-function createMainWindow() {
-	mainWindow = new BrowserWindow({
-		title: 'SysHow',
-		width: isDevMode ? 650 : 400,
-		height: 500,
-		icon: `${__dirname}/assets/icons/icon.png`,
-		resizable: isDevMode,
-		backgroundColor: '#252b4d',
-		webPreferences: {
-			nodeIntegration: true,
-			enableRemoteModule: true, // electron-log
-		},
-		// autoHideMenuBar: true,
-		// frame: false,
-		show: false,
-		opacity: 0.88,
-	});
-
-	// Is development mode open developer tools default
-	isDevMode && mainWindow.webContents.openDevTools();
-
-	mainWindow.loadFile(`${__dirname}/app/index.html`);
-}
 
 // LATER: Squirrel - https://github.com/electron/windows-installer/blob/master/README.md#handling-squirrel-events
 // Notification bottom
@@ -187,7 +157,14 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-	if (BrowserWindow.getAllWindows().length === 0) {
+	// BrowserWindow.getAllWindows ?
+	// MainWindow.getAllWindows ?
+	if (mainWindow.getAllWindows().length === 0) {
 		createMainWindow();
 	}
 });
+
+// Create main window as MainWindow class whic extends BrowserWindow
+function createMainWindow() {
+	mainWindow = new MainWindow(`${__dirname}/app/index.html`, isDevMode);
+}
