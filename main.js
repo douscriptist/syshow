@@ -1,4 +1,12 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const path = require('path');
+const {
+	app,
+	BrowserWindow,
+	Menu,
+	ipcMain,
+	Tray,
+	globalShortcut,
+} = require('electron');
 const slash = require('slash');
 const log = require('electron-log');
 const Store = require('./Store');
@@ -7,6 +15,7 @@ const isDevMode = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform === 'darwin' ? true : false;
 
 let mainWindow;
+let tray;
 
 // Init Store and Defaults
 const store = new Store({
@@ -34,6 +43,9 @@ function createMainWindow() {
 			enableRemoteModule: true, // electron-log
 		},
 		autoHideMenuBar: true,
+		// frame: false,
+		show: false,
+		opacity: 0.88,
 	});
 
 	// Is development mode open developer tools default
@@ -54,8 +66,55 @@ app.on('ready', () => {
 		sendSettings();
 	});
 
+	// add shortcut to hide app as tray
+	globalShortcut.register('Esc', () => {
+		mainWindow.hide();
+	});
+
+	// Menu etc
 	const mainMenu = Menu.buildFromTemplate(menu);
 	Menu.setApplicationMenu(mainMenu);
+
+	// Tray icon
+	const icon = path.join(__dirname, 'assets', 'icons', 'tray_icon.png');
+	tray = new Tray(icon);
+	tray.setToolTip('SysHow'); // set Label
+	// tray.displayBalloon({
+	// 	title: 'S',
+	// 	content: 'H',
+	// 	iconType: 'info',
+	// 	largeIcon: false,
+	// });
+
+	// Double Click - Show/Hide
+	tray.on('double-click', () => {
+		mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+	});
+
+	// Tray right click menu
+	const contextMenu = Menu.buildFromTemplate(rightClickMenu);
+	tray.setContextMenu(contextMenu); // tray.popUpContextMenu(contextMenu);
+
+	// Right Click
+	// tray.on('right-click', () => {});
+
+	mainWindow.on('close', (e) => {
+		if (!app.isQuitting) {
+			e.preventDefault();
+			mainWindow.hide();
+		} else {
+			return true;
+		}
+
+		// LATER:
+		!tray.isDestroyed() &&
+			tray.displayBalloon({
+				title: 'SysHow',
+				content: 'We are taking care of your computer, silently. :)',
+				iconType: 'info',
+				largeIcon: false,
+			});
+	});
 
 	mainWindow.on('closed', () => {
 		mainWindow = null;
@@ -79,6 +138,25 @@ const menu = [
 				},
 		  ]
 		: []),
+];
+
+const rightClickMenu = [
+	{
+		label: 'Hello',
+		click: () => console.log('hello'),
+	},
+	{
+		label: 'Run on start',
+		click: () => console.log((rightClickMenu[1].checked = true)),
+		checked: true,
+	},
+	{
+		label: 'Quit',
+		click: () => {
+			app.isQuitting = true;
+			app.quit();
+		},
+	},
 ];
 
 // Set settings
