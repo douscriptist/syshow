@@ -8,6 +8,7 @@ const ramOverloadDOM = document.getElementById('ram-overload');
 const alertFrequencyDOM = document.getElementById('alert-frequency');
 const settingsForm = document.getElementById('settings-form');
 const alert = document.getElementById('alert');
+const nav = document.getElementById('nav');
 
 // Get default & custom settings
 ipcRenderer.on('settings:get', (e, settings) => {
@@ -43,3 +44,8 @@ function showAlert(message) {
 		alert.classList.add('hide');
 	}, 3000);
 }
+
+// Toggle nav
+ipcRenderer.on('nav:toggle', () => {
+	nav.classList.toggle('hide');
+});

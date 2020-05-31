@@ -42,7 +42,7 @@ function createMainWindow() {
 			nodeIntegration: true,
 			enableRemoteModule: true, // electron-log
 		},
-		autoHideMenuBar: true,
+		// autoHideMenuBar: true,
 		// frame: false,
 		show: false,
 		opacity: 0.88,
@@ -125,6 +125,15 @@ const menu = [
 	// For mac file option
 	...(isMac ? [{ role: 'appMenu' }] : []),
 	{ role: 'fileMenu' },
+	{
+		label: 'View',
+		submenu: [
+			{
+				label: 'Toggle Navigation',
+				click: () => mainWindow.webContents.send('nav:toggle'),
+			},
+		],
+	},
 	...(isDevMode
 		? [
 				{
