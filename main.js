@@ -7,6 +7,7 @@ const Store = require('./Store');
 const MainWindow = require('./MainWindow');
 const SysHowTray = require('./SysHowTray');
 
+process.env.NODE_ENV = 'production';
 const isDevMode = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform === 'darwin' ? true : false;
 
@@ -82,6 +83,7 @@ const menu = [
 		submenu: [
 			{
 				label: 'Toggle Navigation',
+				accelerator: 'CmdOrCtrl+H',
 				click: () => mainWindow.webContents.send('nav:toggle'),
 			},
 		],

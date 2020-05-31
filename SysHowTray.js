@@ -7,13 +7,13 @@ class SysHowTray extends Tray {
 
 		this.setToolTip('SysHow'); // set Label
 
+		// Tray right click menu
+		this.contextMenu = Menu.buildFromTemplate(RIGHT_CLICK_MENU);
+		this.setContextMenu(this.contextMenu);
+		// this.popUpContextMenu(contextMenu);
+
 		this.on('double-click', this.doubleClick);
 		this.on('right-click', this.rightClick);
-
-		// Tray right click menu
-
-		this.setContextMenu(contextMenu);
-		// this.popUpContextMenu(contextMenu);
 	}
 
 	// Double Click - Show/Hide
@@ -41,6 +41,10 @@ class SysHowTray extends Tray {
 
 const RIGHT_CLICK_MENU = [
 	{
+		label: 'SysHow',
+		icon: `${__dirname}/assets/icons/tray_icon.png`,
+	},
+	{
 		label: 'Hello',
 		click: () => console.log('hello'),
 	},
@@ -57,7 +61,5 @@ const RIGHT_CLICK_MENU = [
 		},
 	},
 ];
-
-const contextMenu = Menu.buildFromTemplate(RIGHT_CLICK_MENU);
 
 module.exports = SysHowTray;

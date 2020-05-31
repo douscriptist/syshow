@@ -15,7 +15,7 @@ class MainWindow extends BrowserWindow {
 			},
 			// autoHideMenuBar: true,
 			// frame: false,
-			show: false,
+			show: isDev,
 			opacity: 0.88,
 		});
 
